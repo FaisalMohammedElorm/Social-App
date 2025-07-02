@@ -1,7 +1,7 @@
 import ScreenWrapper from '@/components/ScreenWrapper'
 import { useRouter } from 'expo-router'
 import React from 'react'
-import { Button, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 
 
 const Index = () => {
@@ -10,7 +10,6 @@ const Index = () => {
     <ScreenWrapper>
       <View>
         <Text>Index</Text>
-        <Button title='Welcome' onPress={() => router.push('/Welcome')} />
       </View>
     </ScreenWrapper>
   )
