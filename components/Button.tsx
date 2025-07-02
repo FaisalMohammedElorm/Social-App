@@ -1,6 +1,7 @@
 import { hp } from '@/helpers/common';
 import React from 'react';
 import { StyleSheet, Text, TextStyle, TouchableOpacity, View, ViewStyle } from 'react-native';
+import Loading from './Loading';
 
 interface ButtonProps {
   buttonStyle?: ViewStyle;
@@ -32,7 +33,7 @@ const Button = ({
   if(loading) {
     return (
       <View style={[styles.button, buttonStyle, {backgroundColor: 'white'}]}>
-        
+        <Loading />
       </View>
     )
   }
@@ -42,6 +43,7 @@ const Button = ({
       style={[styles.button, buttonStyle, hasShadow && shadowStyle]}
       disabled={loading}
     >
+      <Text style={[styles.text, textStyle]}>{title}</Text>
     </TouchableOpacity>
   )
 }
