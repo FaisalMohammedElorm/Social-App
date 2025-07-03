@@ -1,11 +1,13 @@
 import Button from '@/components/Button'
 import ScreenWrapper from '@/components/ScreenWrapper'
 import { hp, wp } from '@/helpers/common'
+import { useRouter } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React from 'react'
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 
 const Welcome = () => {
+  const router = useRouter()
   return (
     <ScreenWrapper bg='white'>
       <StatusBar style="dark"/>
@@ -29,14 +31,16 @@ const Welcome = () => {
         <View style={styles.footer}>
           <Button 
             title='Get Started'
-            onPress={() => console.log('Get Started pressed!')}
+            onPress={() => router.push('/SignUpScreen')}
           />
           <View style={styles.bottomTextContainer}>
             <Text style={styles.loginText}>
               Already have an account?
             </Text>
-            <TouchableOpacity>
-              <Text style={[styles.loginText, {fontWeight: 'bold', color: '#00C26F'}]}>Login</Text>
+            <TouchableOpacity onPress={() => router.push('/LoginScreen')}>
+              <Text style={[styles.loginText, {fontWeight: 'bold', color: '#00C26F'}]}>
+                Login
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
