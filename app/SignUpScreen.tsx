@@ -10,39 +10,40 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
 import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const LoginScreen = () => {
+const SignUpScreen = () => {
   const router = useRouter();
   const emailRef = useRef("");
+  const nameRef = useRef("");
   const passwordRef = useRef("");
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
-    if(!emailRef.current || !passwordRef.current) {
-      Alert.alert('Login', "Please fill all the fields");
+    if(!emailRef.current || !nameRef.current || !passwordRef.current) {
+      Alert.alert('Sign Up', "Please fill all the fields");
       return;
     }
     
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(emailRef.current)) {
-      Alert.alert('Login', "Please enter a valid email address");
+      Alert.alert('Sign Up', "Please enter a valid email address");
       return;
     }
     
     setLoading(true);
     
     try {
-      // Here you would implement your actual login logic
-      // For now, just simulate a login process
+      // Here you would implement your actual sign up logic
+      // For now, just simulate a sign up process
       await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-      
-      // On successful login, navigate to the main app
-      Alert.alert('Success', 'Login successful!');
-      // router.push('/home'); // Navigate to home screen after login
+
+      // On successful sign up, navigate to the main app
+      Alert.alert('Success', 'Sign Up successful!');
+      // router.push('/home'); // Navigate to home screen after sign up
       
     } catch (error) {
-      console.log('Login error:', error);
-      Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
+      console.log('Sign Up error:', error);
+      Alert.alert('Sign Up Failed', 'Invalid credentials. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -56,14 +57,19 @@ const LoginScreen = () => {
         </TouchableOpacity>
         {/** Welcome Text */}
         <View>
-          <Text style={styles.welcomeText}>Hey!</Text>
-          <Text style={styles.welcomeText}>Welcome Back</Text>
+          <Text style={styles.welcomeText}>Let&apos;s</Text>
+          <Text style={styles.welcomeText}>Get Started</Text>
         </View>
         {/** Form */}
         <View style={styles.form}>
           <Text style={{fontSize: hp(2), color: '#A3A0A0', fontWeight: 'bold'}}>
-            Please Sign Up to continue
+            Please fill in the details below to create your account
           </Text>
+          <Input 
+            Icon={() => <Feather name="user" size={25} color="#A3A0A0" />} 
+            placeholder="Enter your name" 
+            onChangeText={value => nameRef.current = value}
+          />
           <Input 
             Icon={() => <Feather name="mail" size={25} color="#A3A0A0" />} 
             placeholder="Enter your email" 
@@ -75,14 +81,12 @@ const LoginScreen = () => {
             secureTextEntry
             onChangeText={value => passwordRef.current = value}
           />
-        <Text style={styles.forgotPassword}>
-          Forgot Password?
-        </Text>
         {/** Button */}
         <Button 
           title={'Sign Up'}
           loading={loading}
           onPress={onSubmit}
+          buttonStyle={{marginTop: 25}}
         />
         </View>
         {/** Footer */}
@@ -116,7 +120,7 @@ const styles = StyleSheet.create({
     gap: 45,
   },
   form:{
-    gap: 25
+    gap: 30
   },
   forgotPassword:{
     textAlign: 'right',
@@ -135,4 +139,4 @@ const styles = StyleSheet.create({
     fontSize: hp(1.6)
   }
 });
-export default LoginScreen
+export default SignUpScreen
