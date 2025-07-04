@@ -12,13 +12,13 @@ const Welcome = () => {
     <ScreenWrapper bg='white'>
       <StatusBar style="dark"/>
       <View style={styles.container}>
-        {/** Welcome Image */}
+        {/** welcome Image */}
         <Image 
           style={styles.welcomeImage}
           source={require('@/assets/images/welcome.png')}
           resizeMode='contain'
         />
-        {/** Welcome Text */}
+        {/** welcome Text */}
         <View style={{gap: 20}}>
           <Text style={styles.title}>
             LinkUp!
@@ -31,13 +31,13 @@ const Welcome = () => {
         <View style={styles.footer}>
           <Button 
             title='Get Started'
-            onPress={() => router.push('/SignUpScreen')}
+            onPress={() => router.push('/signUpScreen')}
           />
           <View style={styles.bottomTextContainer}>
             <Text style={styles.loginText}>
               Already have an account?
             </Text>
-            <TouchableOpacity onPress={() => router.push('/LoginScreen')}>
+            <TouchableOpacity onPress={() => router.push('/loginScreen')}>
               <Text style={[styles.loginText, {fontWeight: 'bold', color: '#00C26F'}]}>
                 Login
               </Text>
