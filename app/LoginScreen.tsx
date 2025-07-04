@@ -2,6 +2,7 @@ import Button from '@/components/Button';
 import Input from '@/components/input';
 import ScreenWrapper from '@/components/ScreenWrapper';
 import { hp, wp } from '@/helpers/common';
+import { supabase } from '@/lib/supabase';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -32,17 +33,25 @@ const LoginScreen = () => {
     setLoading(true);
     
     try {
-      // Here you would implement your actual login logic
-      // For now, just simulate a login process
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-      
-      // On successful login, navigate to the main app
-      Alert.alert('Success', 'Login successful!');
-      // router.push('/home'); // Navigate to home screen after login
+      // Supabase authentication
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: emailRef.current,
+        password: passwordRef.current,
+      });
+
+      if (error) {
+        Alert.alert('Login Failed', error.message);
+        return;
+      }
+
+      if (data.user) {
+        Alert.alert('Success', 'Login successful!');
+        // router.push('/home'); // Navigate to home screen after login
+      }
       
     } catch (error) {
       console.log('Login error:', error);
-      Alert.alert('Login Failed', 'Invalid credentials. Please try again.');
+      Alert.alert('Login Failed', 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -75,9 +84,11 @@ const LoginScreen = () => {
             secureTextEntry
             onChangeText={value => passwordRef.current = value}
           />
-        <Text style={styles.forgotPassword}>
-          Forgot Password?
-        </Text>
+        <TouchableOpacity>
+          <Text style={styles.forgotPassword}>
+            Forgot Password?
+          </Text>
+        </TouchableOpacity>
         {/** Button */}
         <Button 
           title={'Login'}
