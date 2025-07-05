@@ -9,7 +9,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import React, { useRef, useState } from 'react';
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const SignUpScreen = () => {
   const router = useRouter();
@@ -71,57 +71,66 @@ const SignUpScreen = () => {
   return (
     <ScreenWrapper bg='white'>
       <StatusBar style="dark" />
-      <View style={styles.container}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.button}>
-          <AntDesign name="arrowleft" size={35} color="black" />
-        </TouchableOpacity>
-        {/** Welcome Text */}
-        <View>
-          <Text style={styles.welcomeText}>Let&apos;s</Text>
-          <Text style={styles.welcomeText}>Get Started</Text>
-        </View>
-        {/** Form */}
-        <View style={styles.form}>
-          <Text style={{fontSize: hp(2), color: '#A3A0A0', fontWeight: 'bold'}}>
-            Please fill in the details below to create your account
-          </Text>
-          <Input 
-            Icon={() => <Feather name="user" size={25} color="#A3A0A0" />} 
-            placeholder="Enter your name" 
-            onChangeText={value => nameRef.current = value}
-          />
-          <Input 
-            Icon={() => <Feather name="mail" size={25} color="#A3A0A0" />} 
-            placeholder="Enter your email" 
-            onChangeText={value => emailRef.current = value}
-          />
-          <Input 
-            Icon={() => <MaterialIcons name="lock" size={25} color="#A3A0A0" />} 
-            placeholder="Enter your password" 
-            secureTextEntry
-            onChangeText={value => passwordRef.current = value}
-          />
-        {/** Button */}
-        <Button 
-          title={'Sign Up'}
-          loading={loading}
-          onPress={onSubmit}
-          buttonStyle={{marginTop: 25}}
-        />
-        </View>
-        {/** Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>Already have an account?</Text>
-          <TouchableOpacity onPress={() => router.push('/loginScreen')}>
-            <Text style={[styles.footerText, {fontWeight: 'bold', color: '#00C26F'}]}>Login</Text>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.container}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.button}>
+            <AntDesign name="arrowleft" size={35} color="black" />
           </TouchableOpacity>
+          {/** Welcome Text */}
+          <View>
+            <Text style={styles.welcomeText}>Let&apos;s</Text>
+            <Text style={styles.welcomeText}>Get Started</Text>
+          </View>
+          {/** Form */}
+          <View style={styles.form}>
+            <Text style={{fontSize: hp(2), color: '#A3A0A0', fontWeight: 'bold'}}>
+              Please fill in the details below to create your account
+            </Text>
+            <Input 
+              Icon={() => <Feather name="user" size={25} color="#A3A0A0" />} 
+              placeholder="Enter your name" 
+              onChangeText={value => nameRef.current = value}
+            />
+            <Input 
+              Icon={() => <Feather name="mail" size={25} color="#A3A0A0" />} 
+              placeholder="Enter your email" 
+              onChangeText={value => emailRef.current = value}
+            />
+            <Input 
+              Icon={() => <MaterialIcons name="lock" size={25} color="#A3A0A0" />} 
+              placeholder="Enter your password" 
+              secureTextEntry
+              onChangeText={value => passwordRef.current = value}
+            />
+          {/** Button */}
+          <Button 
+            title={'Sign Up'}
+            loading={loading}
+            onPress={onSubmit}
+            buttonStyle={{marginTop: 25}}
+          />
+          </View>
+          {/** Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>Already have an account?</Text>
+            <TouchableOpacity onPress={() => router.push('/loginScreen')}>
+              <Text style={[styles.footerText, {fontWeight: 'bold', color: '#00C26F'}]}>Login</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        </View>
-      </ScreenWrapper>
-    )
+      </ScrollView>
+    </ScreenWrapper>
+  )
   }
 
 const styles = StyleSheet.create({
+  scrollContainer: {
+    flexGrow: 1,
+  },
   button:{
     alignSelf: 'flex-start',
     padding: 10,
@@ -135,12 +144,12 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   container: {
-    justifyContent: 'center',
     paddingHorizontal: wp(4),
-    gap: 45,
+    gap: 30,
+    minHeight: hp(100),
   },
   form:{
-    gap: 30
+    gap: 25
   },
   forgotPassword:{
     textAlign: 'right',
