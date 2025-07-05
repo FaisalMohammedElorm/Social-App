@@ -2,6 +2,7 @@ import Button from '@/components/Button';
 import Input from '@/components/input';
 import ScreenWrapper from '@/components/ScreenWrapper';
 import { hp, wp } from '@/helpers/common';
+import { supabase } from '@/lib/supabase';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -23,9 +24,13 @@ const SignUpScreen = () => {
       return;
     }
     
+    let name = nameRef.current.trim();
+    let email = emailRef.current.trim();
+    let password = passwordRef.current.trim();
+    
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailRef.current)) {
+    if (!emailRegex.test(email)) {
       Alert.alert('Sign Up', "Please enter a valid email address");
       return;
     }
@@ -33,17 +38,32 @@ const SignUpScreen = () => {
     setLoading(true);
     
     try {
-      // Here you would implement your actual sign up logic
-      // For now, just simulate a sign up process
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulate API call
-
-      // On successful sign up, navigate to the main app
-      Alert.alert('Success', 'Sign Up successful!');
-      // router.push('/home'); // Navigate to home screen after sign up
+      // Supabase sign up
+      const { data: { session }, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            name: name,
+          }
+        }
+      });
+      
+      if (error) {
+        Alert.alert('Sign Up Failed', error.message);
+        return;
+      }
+      
+      if (session) {
+        Alert.alert('Success', 'Sign Up successful!');
+        // router.push('/home'); // Navigate to home screen after sign up
+      } else {
+        Alert.alert('Success', 'Please check your email to verify your account!');
+      }
       
     } catch (error) {
       console.log('Sign Up error:', error);
-      Alert.alert('Sign Up Failed', 'Invalid credentials. Please try again.');
+      Alert.alert('Sign Up Failed', 'An unexpected error occurred. Please try again.');
     } finally {
       setLoading(false);
     }
