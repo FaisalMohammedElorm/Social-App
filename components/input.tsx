@@ -16,6 +16,7 @@ const Input = (props: InputProps) => {
       }
       <TextInput
         style={{ flex: 1}}
+        autoCapitalize='none'
         placeholderTextColor={props.placeholderTextColor || '#A3A0A0'}
         ref={props.inputRef && props.inputRef}
         {...props}

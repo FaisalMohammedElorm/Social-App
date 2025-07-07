@@ -8,7 +8,7 @@ import Feather from '@expo/vector-icons/Feather';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const SignUpScreen = () => {
@@ -19,59 +19,72 @@ const SignUpScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const onSubmit = async () => {
-    if(!emailRef.current || !nameRef.current || !passwordRef.current) {
+  
+     if (!emailRef.current || !nameRef.current || !passwordRef.current) {
       Alert.alert('Sign Up', "Please fill all the fields");
       return;
     }
-    
+
     let name = nameRef.current.trim();
     let email = emailRef.current.trim();
     let password = passwordRef.current.trim();
-    
-    // Basic email validation
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert('Sign Up', "Please enter a valid email address");
       return;
     }
-    
+
     setLoading(true);
-    
-    try {
-      // Supabase sign up
-      const { data: { session }, error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            name: name,
+
+      setLoading(true);
+
+      try {
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { name },
+          },
+        });
+
+        if (authError) {
+          console.log('Auth error:', authError);
+          Alert.alert('Sign Up Failed', `Error: ${authError.message}`);
+          return;
+        }
+
+        // Only insert if user creation was successful and we have a user ID
+        if (authData.user?.id) {
+          const { error: insertError } = await supabase
+            .from('Nonusers') 
+            .insert({
+              id: authData.user.id,
+              email,
+              name,
+            });
+
+          if (insertError) {
+            console.log('Insert error:', insertError);
+            Alert.alert('Sign Up Failed', `Database error: ${insertError.message}`);
+            return;
           }
         }
-      });
-      
-      if (error) {
-        Alert.alert('Sign Up Failed', error.message);
-        return;
+
+        Alert.alert('Sign Up Successful', 'Your account has been created successfully!');
+      } catch (error: any) {
+        console.log('Sign Up error:', error);
+        Alert.alert('Sign Up Failed', `Unexpected error: ${error.message || error}`);
+      } finally {
+        setLoading(false);
       }
-      
-      if (session) {
-        Alert.alert('Success', 'Sign Up successful!');
-        // router.push('/home'); // Navigate to home screen after sign up
-      } else {
-        Alert.alert('Success', 'Please check your email to verify your account!');
-      }
-      
-    } catch (error) {
-      console.log('Sign Up error:', error);
-      Alert.alert('Sign Up Failed', 'An unexpected error occurred. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  }
+    };
+
+
   return (
     <ScreenWrapper bg='white'>
       <StatusBar style="dark" />
-      <ScrollView 
+      <ScrollView
         contentContainerStyle={styles.scrollContainer}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
@@ -87,51 +100,51 @@ const SignUpScreen = () => {
           </View>
           {/** Form */}
           <View style={styles.form}>
-            <Text style={{fontSize: hp(2), color: '#A3A0A0', fontWeight: 'bold'}}>
+            <Text style={{ fontSize: hp(2), color: '#A3A0A0', fontWeight: 'bold' }}>
               Please fill in the details below to create your account
             </Text>
-            <Input 
-              Icon={() => <Feather name="user" size={25} color="#A3A0A0" />} 
-              placeholder="Enter your name" 
+            <Input
+              Icon={() => <Feather name="user" size={25} color="#A3A0A0" />}
+              placeholder="Enter your name"
               onChangeText={value => nameRef.current = value}
             />
-            <Input 
-              Icon={() => <Feather name="mail" size={25} color="#A3A0A0" />} 
-              placeholder="Enter your email" 
+            <Input
+              Icon={() => <Feather name="mail" size={25} color="#A3A0A0" />}
+              placeholder="Enter your email"
               onChangeText={value => emailRef.current = value}
             />
-            <Input 
-              Icon={() => <MaterialIcons name="lock" size={25} color="#A3A0A0" />} 
-              placeholder="Enter your password" 
+            <Input
+              Icon={() => <MaterialIcons name="lock" size={25} color="#A3A0A0" />}
+              placeholder="Enter your password"
               secureTextEntry
               onChangeText={value => passwordRef.current = value}
             />
-          {/** Button */}
-          <Button 
-            title={'Sign Up'}
-            loading={loading}
-            onPress={onSubmit}
-            buttonStyle={{marginTop: 25}}
-          />
+            {/** Button */}
+            <Button
+              title={'Sign Up'}
+              loading={loading}
+              onPress={onSubmit}
+              buttonStyle={{ marginTop: 25 }}
+            />
           </View>
           {/** Footer */}
           <View style={styles.footer}>
             <Text style={styles.footerText}>Already have an account?</Text>
             <TouchableOpacity onPress={() => router.push('/loginScreen')}>
-              <Text style={[styles.footerText, {fontWeight: 'bold', color: '#00C26F'}]}>Login</Text>
+              <Text style={[styles.footerText, { fontWeight: 'bold', color: '#00C26F' }]}>Login</Text>
             </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
     </ScreenWrapper>
   )
-  }
+}
 
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
   },
-  button:{
+  button: {
     alignSelf: 'flex-start',
     padding: 10,
     borderRadius: 50,
@@ -148,21 +161,21 @@ const styles = StyleSheet.create({
     gap: 30,
     minHeight: hp(100),
   },
-  form:{
+  form: {
     gap: 25
   },
-  forgotPassword:{
+  forgotPassword: {
     textAlign: 'right',
     fontWeight: 'bold',
     color: '#000000'
-  }, 
-  footer:{
+  },
+  footer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     gap: 5
   },
-  footerText:{
+  footerText: {
     textAlign: 'center',
     color: '#4D4343',
     fontSize: hp(1.6)
